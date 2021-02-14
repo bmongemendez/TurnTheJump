@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CharacterScript : MonoBehaviour
@@ -8,7 +9,6 @@ public class CharacterScript : MonoBehaviour
 
     private Rigidbody2D rb2d;
     private float directionX;
-    public Text scoreText;
     private float maxScore = 0.0f;
     private GameManager gmanager;
     public GameObject bulletPrefab;
@@ -30,17 +30,22 @@ public class CharacterScript : MonoBehaviour
             if (rb2d.velocity.y > 0 && transform.position.y > maxScore)
             {
                 maxScore = transform.position.y;
+
+                ScoreManager.instance.sumScore(maxScore);
             }
 
-            scoreText.text = "Score:" + Mathf.Round(maxScore).ToString();
+            if (transform.position.y < maxScore - 50f)
+            {
+                Destroy(this.gameObject);
+                SceneManager.LoadScene("StartMenuScene");
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                shoot();
+            }
+
         }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            shoot();
-        }
-
-
     }
 
     void FixedUpdate()
